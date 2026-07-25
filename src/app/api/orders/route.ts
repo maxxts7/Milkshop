@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
-import { customAlphabet } from "nanoid";
+import { randomInt } from "node:crypto";
 import { db } from "@/lib/db";
 import { customers, orders, orderItems } from "@/lib/db/schema";
 import { priceCart } from "@/lib/cart";
@@ -20,8 +20,18 @@ import {
 
 export const dynamic = "force-dynamic";
 
-// No look-alike characters — these numbers get read aloud over the phone.
-const suffix = customAlphabet("ACDEFGHJKLMNPQRTUVWXY34679", 6);
+// No look-alike characters (no O/0, I/1, S/5, B/8) — order numbers get read
+// aloud over the phone. randomInt is CSPRNG-backed and uniform, so receipts
+// stay unguessable; using it instead of a package keeps this dependency-free.
+const ORDER_ALPHABET = "ACDEFGHJKLMNPQRTUVWXY34679";
+
+function suffix(length = 6): string {
+  let out = "";
+  for (let i = 0; i < length; i++) {
+    out += ORDER_ALPHABET[randomInt(ORDER_ALPHABET.length)];
+  }
+  return out;
+}
 
 const bodySchema = z.object({
   items: z

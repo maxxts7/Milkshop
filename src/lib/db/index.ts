@@ -11,17 +11,16 @@ import * as schema from "./schema";
  *   any other postgres://    → postgres-js over TCP, for a self-hosted database.
  */
 
-const url = process.env.DATABASE_URL;
+/**
+ * Read at call time, never at module scope. `next build` imports this module in
+ * every worker while collecting page data; throwing here would fail the build on
+ * a machine that has no database — even though the build never runs a query,
+ * because every database-backed page is force-dynamic.
+ */
+const dbUrl = () => process.env.DATABASE_URL ?? "";
 
-if (!url) {
-  throw new Error(
-    "DATABASE_URL is not set. Copy .env.example to .env.local — the default " +
-      "pglite:// value needs no signup and works immediately.",
-  );
-}
-
-export const isPglite = url.startsWith("pglite://");
-export const isNeon = url.includes("neon.tech");
+export const isPglite = () => dbUrl().startsWith("pglite://");
+export const isNeon = () => dbUrl().includes("neon.tech");
 
 /*
  * require() rather than import here, deliberately: only one of these three
@@ -31,11 +30,24 @@ export const isNeon = url.includes("neon.tech");
  */
 /* eslint-disable @typescript-eslint/no-require-imports */
 function createDb() {
-  if (isPglite) {
+  const url = dbUrl();
+
+  // Reached only when something actually queries — i.e. a real request.
+  if (!url) {
+    throw new Error(
+      "DATABASE_URL is not set.\n" +
+        "  · Locally: copy .env.example to .env.local (the default pglite:// " +
+        "value needs no signup).\n" +
+        "  · On Netlify: add DATABASE_URL under Site configuration → " +
+        "Environment variables, then redeploy.",
+    );
+  }
+
+  if (isPglite()) {
     // Required lazily so the WASM bundle never reaches a Neon/TCP deployment.
     const { PGlite } = require("@electric-sql/pglite");
     const { drizzle } = require("drizzle-orm/pglite");
-    const dir = url!.replace("pglite://", "") || ".data/khanams";
+    const dir = url.replace("pglite://", "") || ".data/khanams";
 
     // PGlite's own mkdir is not recursive, so ensure the parent exists first.
     const { mkdirSync } = require("fs");
@@ -48,15 +60,15 @@ function createDb() {
     return drizzle(g.__pglite, { schema });
   }
 
-  if (isNeon) {
+  if (isNeon()) {
     const { drizzle } = require("drizzle-orm/neon-http");
     const { neon } = require("@neondatabase/serverless");
-    return drizzle(neon(url!), { schema });
+    return drizzle(neon(url), { schema });
   }
 
   const { drizzle } = require("drizzle-orm/postgres-js");
   const postgres = require("postgres");
-  return drizzle(postgres(url!, { max: 1 }), { schema });
+  return drizzle(postgres(url, { max: 1 }), { schema });
 }
 /* eslint-enable @typescript-eslint/no-require-imports */
 

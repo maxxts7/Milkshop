@@ -60,6 +60,11 @@ variables*:
 | `RESEND_API_KEY` | no | Emails you each new order; blank logs it instead |
 | `ORDER_ALERT_EMAIL` | no | Where order alerts go |
 
+The build itself does **not** need `DATABASE_URL` — every database-backed page is
+rendered per request, so nothing queries at build time. A deploy with the
+variable missing will build fine and then show a clear error on the first
+request, rather than failing the build with a stack trace.
+
 **4. Create the tables.** Point your local `.env.local` at the Neon URL and run:
 
 ```bash

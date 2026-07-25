@@ -7,13 +7,13 @@ import "./load-env";
 import { db, isPglite, isNeon } from "./index";
 
 async function main() {
-  const target = isPglite ? "PGlite (local)" : isNeon ? "Neon" : "Postgres";
+  const target = isPglite() ? "PGlite (local)" : isNeon() ? "Neon" : "Postgres";
   console.log(`→ Running migrations against ${target}…`);
 
-  if (isPglite) {
+  if (isPglite()) {
     const { migrate } = await import("drizzle-orm/pglite/migrator");
     await migrate(db as never, { migrationsFolder: "./drizzle" });
-  } else if (isNeon) {
+  } else if (isNeon()) {
     const { migrate } = await import("drizzle-orm/neon-http/migrator");
     await migrate(db as never, { migrationsFolder: "./drizzle" });
   } else {

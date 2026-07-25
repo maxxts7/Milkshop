@@ -172,6 +172,55 @@
     object-fit: cover;
   }
 
+  /*
+    Split-flap tile for the live bottle boards. The tile is the window; the
+    reel inside it holds 0–9 stacked and slides to bring a digit into view.
+  */
+  .digit-tile {
+    display: block;
+    overflow: hidden;
+    width: 2rem;
+    height: 3rem;
+    background: var(--color-ink);
+    border-radius: 5px;
+  }
+  @media (min-width: 640px) {
+    .digit-tile {
+      width: 2.5rem;
+      height: 3.75rem;
+    }
+  }
+
+  .digit-reel {
+    display: flex;
+    flex-direction: column;
+    height: 1000%;
+    transition: transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .digit-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 10%;
+    color: var(--color-paper);
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  @media (min-width: 640px) {
+    .digit-cell {
+      font-size: 2.125rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .digit-reel {
+      transition: none;
+    }
+  }
+
   .tag {
     display: inline-flex;
     align-items: center;

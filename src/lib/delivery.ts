@@ -77,7 +77,7 @@ const WEEKDAY_NAMES = [
   "Friday",
   "Saturday",
 ];
-const MONTH_NAMES = [
+export const MONTH_NAMES = [
   "January",
   "February",
   "March",

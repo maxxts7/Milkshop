@@ -2,14 +2,23 @@ import Image from "next/image";
 import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
 import { CutoffCountdown } from "@/components/cutoff-countdown";
-import { ArrowRightIcon, LeafIcon, StoreIcon, TruckIcon } from "@/components/icons";
+import { BottleBoards, BottleStats } from "@/components/bottle-counter";
+import {
+  ArrowRightIcon,
+  LeafIcon,
+  ShieldIcon,
+  StoreIcon,
+  TruckIcon,
+} from "@/components/icons";
 import { getCatalogue, getSettings } from "@/lib/store";
+import { getBottleCount } from "@/lib/bottle-count";
 import { getCutoffInfo } from "@/lib/delivery";
 import { formatPaise } from "@/lib/money";
 
 export default async function HomePage() {
   const [catalogue, settings] = await Promise.all([getCatalogue(), getSettings()]);
   const cutoff = getCutoffInfo(settings);
+  const bottles = getBottleCount();
 
   const milkHouse = catalogue.filter(
     (p) => p.house === "Milk House" && p.status === "active",
@@ -22,57 +31,91 @@ export default async function HomePage() {
   return (
     <>
       {/* ---------------------------------------------------------- hero */}
-      <section className="relative">
-        <div className="grid lg:grid-cols-2">
-          <div className="order-2 lg:order-1 flex items-center py-16 md:py-24 lg:py-32">
-            <div className="wrap lg:max-w-none lg:pl-8 xl:pl-16">
-              <p className="eyebrow mb-6">Srinagar, Kashmir · Est. 2022</p>
-              <h1 className="font-display text-[2.75rem] leading-[1.05] md:text-6xl xl:text-7xl mb-6">
-                From our farm
-                <br />
-                to your home.
-              </h1>
-              <p className="text-lg text-ink-soft leading-relaxed max-w-md mb-8">
-                Grass-fed cow and goat milk bottled the morning it is milked.
-                Handmade dahi set in clay. Raw Kashmiri honey, and ghee cooked
-                the slow way. Nothing added, nothing hidden.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <Link href="/shop" className="btn btn-solid">
-                  Shop the range
-                </Link>
-                <Link href="/subscribe" className="btn btn-outline">
-                  Start a milk subscription
-                </Link>
-              </div>
-            </div>
+      <section className="relative isolate overflow-hidden">
+        <Image
+          src="/images/lifestyle/grass-bottle.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover -z-10"
+        />
+        {/*
+          Scrim: the photography changes with the season, the legibility of the
+          boards must not. Flat wash first, then a soft top-down fade so the
+          heading sits on the lightest part of the frame.
+        */}
+        <div className="absolute inset-0 -z-10 bg-paper/80" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-paper via-paper/40 to-paper/70" />
+
+        <div className="wrap py-12 md:py-16 text-center">
+          <h1 className="font-display text-fresh text-[2.25rem] leading-[1.1] sm:text-5xl md:text-6xl">
+            Real Milk. Real Freshness.
+          </h1>
+
+          <div className="flex items-center justify-center gap-4 my-5">
+            <span className="h-px w-14 sm:w-24 bg-fresh/30" />
+            <LeafIcon className="h-4 w-4 text-fresh shrink-0" />
+            <span className="h-px w-14 sm:w-24 bg-fresh/30" />
           </div>
 
-          <div className="order-1 lg:order-2 relative aspect-[4/3] lg:aspect-auto lg:min-h-[38rem]">
-            <Image
-              src="/images/lifestyle/grass-bottle.jpg"
-              alt="A Milk House glass bottle of fresh cow milk resting in grass"
-              fill
-              priority
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
-            />
+          <p className="font-display text-lg sm:text-xl md:text-2xl text-ink-soft mb-9 md:mb-11">
+            From our farm to your home
+          </p>
+
+          <BottleBoards initial={bottles} />
+
+          <div className="flex flex-wrap justify-center gap-3 mt-10">
+            <Link href="/shop" className="btn btn-solid">
+              Shop the range
+            </Link>
+            <Link href="/subscribe" className="btn btn-outline">
+              Start a milk subscription
+            </Link>
           </div>
         </div>
       </section>
 
+      {/* ---------------------------------------------- month & year tally */}
+      <section className="wrap py-12 md:py-16">
+        <BottleStats initial={bottles} />
+      </section>
+
       {/* ------------------------------------------------- promise strip */}
-      <section className="bg-ink text-paper">
-        <div className="wrap py-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="bg-fresh text-paper">
+        <div className="wrap py-8 md:py-10 grid gap-7 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            ["Touch-free milking", "Automated bottling, never handled"],
-            ["No adulterants", "No chemicals, no milk powder, no water"],
-            ["Grass-fed herds", "Open grazing, our own animals"],
-            ["Eco-friendly glass", "Returnable, certified bottles"],
-          ].map(([title, body]) => (
-            <div key={title}>
-              <h3 className="font-display text-lg mb-1.5">{title}</h3>
-              <p className="text-sm text-white/60 leading-relaxed">{body}</p>
+            {
+              icon: <LeafIcon className="h-5 w-5" />,
+              title: "100% pure & organic",
+              body: "No additives, no preservatives",
+            },
+            {
+              icon: <StoreIcon className="h-5 w-5" />,
+              title: "Farm fresh",
+              body: "Straight from our farm",
+            },
+            {
+              icon: <ShieldIcon className="h-5 w-5" />,
+              title: "Hygienic & safe",
+              body: "Packed with care",
+            },
+            {
+              icon: <TruckIcon className="h-5 w-5" />,
+              title: `Delivery within ${settings.freshDeliveryCity}`,
+              body: "Fast & reliable",
+            },
+          ].map((f) => (
+            <div key={f.title} className="flex items-center gap-4">
+              <span className="inline-flex shrink-0 items-center justify-center h-11 w-11 rounded-full border border-white/35">
+                {f.icon}
+              </span>
+              <div>
+                <h3 className="font-display text-base leading-snug mb-0.5">
+                  {f.title}
+                </h3>
+                <p className="text-sm text-white/65 leading-snug">{f.body}</p>
+              </div>
             </div>
           ))}
         </div>

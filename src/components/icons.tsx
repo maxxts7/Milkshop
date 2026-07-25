@@ -96,6 +96,80 @@ export function StoreIcon(props: IconProps) {
   );
 }
 
+export function BottleIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...props}
+    >
+      <path d="M10 2h4v3.2c0 .8.3 1.5.9 2.1l.7.7c.6.6.9 1.4.9 2.2V20a2 2 0 0 1-2 2H9.5a2 2 0 0 1-2-2v-9.8c0-.8.3-1.6.9-2.2l.7-.7c.6-.6.9-1.3.9-2.1Z" />
+      <path d="M7.5 12.5h9" />
+    </svg>
+  );
+}
+
+export function GoatIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...props}
+    >
+      <path d="M4 11h9l3-2.5V13a5 5 0 0 1-5 5H8a4 4 0 0 1-4-4Z" />
+      <path d="M16 8.5c.6-1.6.3-3.2-1-4.5M18.5 9c1.2-1.2 1.8-2.7 1.7-4.5" />
+      <path d="M6 18v3M11 18v3M14.5 16.5 16 21" />
+      <path d="M12.5 10.2h.01" />
+    </svg>
+  );
+}
+
+export function ShieldIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...props}
+    >
+      <path d="M12 3l7 3v5.5c0 4.3-2.9 8.2-7 9.5-4.1-1.3-7-5.2-7-9.5V6Z" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  );
+}
+
+export function TrendUpIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...props}
+    >
+      <path d="m3 17 6-6 4 4 8-8" />
+      <path d="M15 7h6v6" />
+    </svg>
+  );
+}
+
 export function LeafIcon(props: IconProps) {
   return (
     <svg

@@ -5,6 +5,18 @@ import { WhatsAppButton } from "@/components/whatsapp-button";
 import { getSettings } from "@/lib/store";
 import { getCurrentCustomer } from "@/lib/auth";
 
+/**
+ * Applies to every page in the storefront, because every one of them renders
+ * live database content — at minimum the store details, announcement bar and
+ * cart badge in the header and footer.
+ *
+ * Set here rather than page by page on purpose: a page that forgets it gets
+ * prerendered at build time, which means it queries the database during the
+ * build and ships a snapshot of your prices that never updates. That is exactly
+ * how the first Netlify deploy broke on /policies/privacy.
+ */
+export const dynamic = "force-dynamic";
+
 export default async function ShopLayout({
   children,
 }: {

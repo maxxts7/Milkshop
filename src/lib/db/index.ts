@@ -90,6 +90,19 @@ function getDb(): Database {
  */
 export const db: Database = new Proxy({} as Database, {
   get(_target, prop, receiver) {
+    /**
+     * Answer incidental probes without connecting.
+     *
+     * `JSON.stringify` looks up `toJSON`, `await` looks up `then`, and various
+     * inspection paths look up well-known symbols. Any of those firing a real
+     * connection meant a stray serialization could open a database — which is
+     * how a build with no DATABASE_URL blew up inside `stringify` rather than
+     * anywhere near a query.
+     */
+    if (prop === "then" || prop === "toJSON" || typeof prop === "symbol") {
+      return undefined;
+    }
+
     const real = getDb() as unknown as Record<string | symbol, unknown>;
     const value = Reflect.get(real, prop, receiver);
     return typeof value === "function" ? value.bind(real) : value;

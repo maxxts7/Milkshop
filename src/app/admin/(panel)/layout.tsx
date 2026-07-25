@@ -14,6 +14,9 @@ const NAV = [
   { href: "/admin/settings", label: "Settings" },
 ];
 
+/** The dashboard is entirely live data behind a session — never prerender it. */
+export const dynamic = "force-dynamic";
+
 export default async function AdminLayout({
   children,
 }: {

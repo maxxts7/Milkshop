@@ -233,6 +233,19 @@ src/
     └── email.ts          order alerts (console → Resend)
 ```
 
+### A note on adding pages
+
+`export const dynamic = "force-dynamic"` is set on the `(shop)` and
+`admin/(panel)` layouts, so every page below them renders per request. Leave it
+alone. Without it Next pre-renders a page at build time, which bakes that
+moment's prices and store details into the deployed HTML — the page then keeps
+showing yesterday's numbers no matter what you change in the admin, and the
+build itself starts needing a database.
+
+A quick way to check you haven't broken this: rename `.env.local` out of the way
+and run `npm run build`. It should still succeed. If it fails with
+`DATABASE_URL is not set`, some page is being pre-rendered that shouldn't be.
+
 ### A note on prices in the code
 
 Money is stored as **integer paise** everywhere (`₹60` is `6000`) and only

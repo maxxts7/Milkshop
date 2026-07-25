@@ -1,26 +1,219 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+  Khanams Grassfed — black & white, taken from the Milk House bottle label.
+  Paper, ink, and one warm cream for section breaks. No brand colour beyond that;
+  the product photography carries all the colour on the page.
+*/
+
+@theme {
+  --color-paper: #ffffff;
+  --color-paper-warm: #faf9f6;
+  --color-cream: #f4f1ea;
+  --color-ink: #111111;
+  --color-ink-soft: #4a4a4a;
+  --color-ink-muted: #767676;
+  --color-rule: #e4e1da;
+  --color-rule-strong: #cfcbc2;
+
+  /* Used sparingly: stock states, confirmations, warnings. */
+  --color-fresh: #1f5c3d;
+  --color-fresh-soft: #eaf2ed;
+  --color-alert: #8c2f1d;
+  --color-alert-soft: #f8ece9;
+
+  --font-display: var(--font-playfair), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 2px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "kern", "liga";
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+
+  /* Inputs inherit the page, never the browser's blue chrome. */
+  input,
+  select,
+  textarea,
+  button {
+    font: inherit;
+    color: inherit;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Small caps label used above section headings and on product meta. */
+  .eyebrow {
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+    font-weight: 500;
+  }
+
+  .rule {
+    border: 0;
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.75rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid var(--color-ink);
+    border-radius: var(--radius-card);
+    transition:
+      background-color 0.18s ease,
+      color 0.18s ease,
+      opacity 0.18s ease;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .btn-solid {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .btn-solid:hover:not(:disabled) {
+    background: #2e2e2e;
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--color-ink);
+  }
+  .btn-outline:hover:not(:disabled) {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.6875rem;
+  }
+
+  .field {
+    width: 100%;
+    padding: 0.75rem 0.875rem;
+    background: var(--color-paper);
+    border: 1px solid var(--color-rule-strong);
+    border-radius: var(--radius-card);
+    font-size: 0.9375rem;
+    transition: border-color 0.15s ease;
+  }
+  .field:focus {
+    border-color: var(--color-ink);
+    outline: none;
+  }
+  .field::placeholder {
+    color: #a8a49c;
+  }
+
+  .label {
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+    margin-bottom: 0.375rem;
+    font-weight: 500;
+  }
+
+  /* Wraps every product photo so mismatched source crops still line up. */
+  .photo {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-cream);
+  }
+  .photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    border-radius: var(--radius-card);
+  }
+}
+
+@layer utilities {
+  .wrap {
+    width: 100%;
+    max-width: 78rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .wrap {
+      padding-inline: 2rem;
+    }
+  }
+
+  .wrap-narrow {
+    width: 100%;
+    max-width: 44rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  /* Horizontal scrollers must not make the page itself scroll sideways. */
+  .scroll-x {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
 }

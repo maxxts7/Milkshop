@@ -11,6 +11,8 @@ export const metadata: Metadata = {
     "Fresh cow and goat milk, handmade dahi, raw Kashmiri honey, cow ghee, desi eggs, wari and pickle from Khanams Grassfed, Srinagar.",
 };
 
+const FACEBOOK_PAGE_URL = "https://www.facebook.com/share/19J7x5iY27/";
+
 const FILTERS = [
   { key: "all", label: "Everything" },
   { key: "Milk House", label: "Milk House" },
@@ -54,6 +56,14 @@ export default async function ShopPage({
           Fresh items are delivered across {settings.freshDeliveryCity} the next
           morning. Honey, ghee, wari and pickle ship anywhere in India.
         </p>
+        <a
+          href={FACEBOOK_PAGE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn btn-outline btn-sm mt-6"
+        >
+          Follow us on Facebook
+        </a>
       </header>
 
       <nav className="scroll-x -mx-5 px-5 md:mx-0 md:px-0 mb-10" aria-label="Filter products">

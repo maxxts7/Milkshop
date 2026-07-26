@@ -59,6 +59,12 @@ variables*:
 | `MSG91_AUTH_KEY` / `MSG91_TEMPLATE_ID` / `MSG91_SENDER_ID` | no | From your MSG91 account |
 | `RESEND_API_KEY` | no | Emails you each new order; blank logs it instead |
 | `ORDER_ALERT_EMAIL` | no | Where order alerts go |
+| `WHATSAPP_TOKEN` / `WHATSAPP_PHONE_NUMBER_ID` | no | WhatsApps you each new order; blank logs it instead |
+
+Order alerts go to the WhatsApp number set in *Admin → Settings*, so it can be
+changed without a deploy. Anything that stops an alert going out — no token, no
+number, an API error — is written to the function log with the full message
+text, so nothing is lost and it can be re-sent by hand.
 
 The build itself does **not** need `DATABASE_URL` — every database-backed page is
 rendered per request, so nothing queries at build time. A deploy with the

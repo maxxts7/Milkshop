@@ -59,7 +59,18 @@ export default async function AdminSettings() {
             </div>
             <div>
               <label className="label" htmlFor="s-wa">WhatsApp (with 91)</label>
-              <input id="s-wa" name="whatsappNumber" className="field" defaultValue={settings.whatsappNumber} required />
+              <input
+                id="s-wa"
+                name="whatsappNumber"
+                className="field"
+                defaultValue={settings.whatsappNumber}
+                aria-describedby="s-wa-help"
+                required
+              />
+              <p id="s-wa-help" className="text-xs text-ink-muted mt-1.5">
+                Every new order is sent here on WhatsApp, and it is the number
+                behind the chat button on the shop.
+              </p>
             </div>
             <div>
               <label className="label" htmlFor="s-email">Email</label>

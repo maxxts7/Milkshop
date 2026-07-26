@@ -8,6 +8,7 @@ import { priceCart } from "@/lib/cart";
 import { getSettings, isPincodeServiceable } from "@/lib/store";
 import { getCurrentCustomer } from "@/lib/auth";
 import { sendOrderAlert } from "@/lib/email";
+import { sendOrderWhatsapp } from "@/lib/whatsapp";
 import {
   calculateDeliveryFee,
   getCutoffInfo,
@@ -249,8 +250,9 @@ export async function POST(request: Request) {
     })),
   );
 
-  // Alerting must never fail the order — sendOrderAlert swallows its own errors.
-  await sendOrderAlert({
+  // Alerting must never fail the order — both senders swallow their own errors.
+  // One alert per order, fired here, straight after the one INSERT that made it.
+  const alert = {
     orderNumber,
     contactName: contact.name,
     contactPhone: phone,
@@ -274,7 +276,12 @@ export async function POST(request: Request) {
     deliveryFeePaise: fee.feePaise,
     totalPaise,
     customerNote: note || null,
-  });
+  };
+
+  await Promise.all([
+    sendOrderAlert(alert),
+    sendOrderWhatsapp(alert, settings.whatsappNumber),
+  ]);
 
   return NextResponse.json({ ok: true, orderNumber });
 }

@@ -9,6 +9,9 @@ export const metadata: Metadata = {
     "Khanams Grassfed is a family dairy in Srinagar producing raw grass-fed milk, handmade dahi, raw Kashmiri honey and traditional cow ghee.",
 };
 
+/** public/videos/our-story-N.mp4, with a poster frame beside each. */
+const VIDEOS = [1, 2, 3];
+
 export default async function AboutPage() {
   const settings = await getSettings();
 
@@ -44,6 +47,43 @@ export default async function AboutPage() {
               sell is something we feed our own family.
             </p>
           </div>
+        </div>
+      </section>
+
+      {/*
+        Clips shot on a phone, so all three are portrait. They are held in a
+        fixed 9:16 box with a capped width — left to fill the column they would
+        stand taller than the viewport on desktop. preload="none" means nothing
+        but the poster is fetched until someone actually presses play.
+      */}
+      <section className="bg-paper-warm">
+        <div className="wrap py-16 md:py-24">
+          <div className="max-w-2xl mb-10 md:mb-12">
+            <p className="eyebrow mb-3">Watch</p>
+            <h2 className="font-display text-3xl md:text-4xl leading-tight">
+              Videos from the farm
+            </h2>
+            <p className="text-ink-soft mt-4 leading-relaxed">
+              Tap a clip to play it — they have sound.
+            </p>
+          </div>
+
+          <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {VIDEOS.map((n) => (
+              <li key={n} className="mx-auto w-full max-w-xs">
+                <div className="photo aspect-[9/16]">
+                  <video
+                    src={`/videos/our-story-${n}.mp4`}
+                    poster={`/videos/our-story-${n}-poster.jpg`}
+                    controls
+                    preload="none"
+                    playsInline
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

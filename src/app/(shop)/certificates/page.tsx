@@ -7,7 +7,7 @@ import { getSettings } from "@/lib/store";
 export const metadata: Metadata = {
   title: "Certificates & reports",
   description:
-    "The certification and independent milk analysis behind Khanams Grassfed — issued by SKUAST Kashmir and IAH & BP, Zakura, Srinagar.",
+    "The certifications behind Khanams Grassfed — SKUAST Kashmir, Udyam registration, food-grade glass bottles and independent milk analysis from IAH & BP, Zakura, Srinagar.",
 };
 
 /**
@@ -48,8 +48,9 @@ export default async function CertificatesPage() {
           </h1>
           <p className="text-lg text-ink-soft leading-relaxed">
             We would rather show you the paperwork than ask you to take our word
-            for it. Below is our certification and the independent analysis of
-            our milk, alongside our FSSAI licence number.
+            for it. Below are our certifications, our government registration
+            and the independent analysis of our milk, alongside our FSSAI
+            licence number.
           </p>
         </div>
       </section>
@@ -81,6 +82,80 @@ export default async function CertificatesPage() {
                 alt="Certificate of completion issued to Khanams Grassfed by SKUAST Kashmir, certificate number HADP/DK/1695, dated 14 December 2024"
                 width={1032}
                 height={602}
+                sizes="(min-width: 1024px) 56rem, 100vw"
+                className="w-full h-auto"
+              />
+            </a>
+            <figcaption className="text-sm text-ink-muted mt-3">
+              Tap the certificate to open it full size.
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      {/* ------------------------------------------ udyam registration */}
+      <section className="wrap py-16 md:py-24">
+        <div className="max-w-2xl mb-10">
+          <h2 className="font-display text-3xl md:text-4xl leading-tight mb-4">
+            Udyam registration
+          </h2>
+          <p className="text-ink-soft leading-relaxed">
+            Khanams Grassfed is registered with the Ministry of Micro, Small and
+            Medium Enterprises, Government of India, as a micro manufacturing
+            enterprise. Registration no. UDYAM-JK-06-0008923, classified 27
+            January 2023.
+          </p>
+        </div>
+
+        <figure className="max-w-4xl">
+          <a
+            href="/images/certificates/udyam-registration.jpg"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block photo border border-rule-strong bg-paper"
+          >
+            <Image
+              src="/images/certificates/udyam-registration.jpg"
+              alt="Udyam registration certificate issued to Khanams Grassfed by the Ministry of Micro, Small and Medium Enterprises, registration number UDYAM-JK-06-0008923"
+              width={1024}
+              height={1312}
+              sizes="(min-width: 1024px) 56rem, 100vw"
+              className="w-full h-auto"
+            />
+          </a>
+          <figcaption className="text-sm text-ink-muted mt-3">
+            Tap the certificate to open it full size.
+          </figcaption>
+        </figure>
+      </section>
+
+      {/* ------------------------------------- food-grade glass bottles */}
+      <section className="bg-cream">
+        <div className="wrap py-16 md:py-24">
+          <div className="max-w-2xl mb-10">
+            <h2 className="font-display text-3xl md:text-4xl leading-tight mb-4">
+              Food-grade glass bottles
+            </h2>
+            <p className="text-ink-soft leading-relaxed">
+              The milk goes into glass, and the glass is certified too. Our
+              bottles are supplied by Ajanta Bottle Private Limited under FSSAI
+              licence no. 12722999000011, certified safe and hygienic for food
+              contact. Valid 15 July 2024 to 14 July 2027.
+            </p>
+          </div>
+
+          <figure className="max-w-4xl">
+            <a
+              href="/images/certificates/food-grade-packaging.jpg"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block photo border border-rule-strong bg-paper"
+            >
+              <Image
+                src="/images/certificates/food-grade-packaging.jpg"
+                alt="Food grade certificate confirming the glass bottles supplied by Ajanta Bottle Private Limited are safe and hygienic for food packaging, FSSAI licence number 12722999000011"
+                width={968}
+                height={450}
                 sizes="(min-width: 1024px) 56rem, 100vw"
                 className="w-full h-auto"
               />

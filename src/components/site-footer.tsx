@@ -37,6 +37,7 @@ export function SiteFooter({ settings }: { settings: Settings }) {
           <h3 className="eyebrow !text-white/50 mb-4">Information</h3>
           <ul className="space-y-2.5 text-sm text-white/80">
             <li><Link href="/about" className="hover:text-white">Our story</Link></li>
+            <li><Link href="/certificates" className="hover:text-white">Certificates &amp; reports</Link></li>
             <li><Link href="/contact" className="hover:text-white">Visit the store</Link></li>
             <li><Link href="/policies/shipping" className="hover:text-white">Delivery &amp; pickup</Link></li>
             <li><Link href="/policies/refunds" className="hover:text-white">Cancellations &amp; refunds</Link></li>

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
 import { CutoffCountdown } from "@/components/cutoff-countdown";
 import { BottleBoards, BottleStats } from "@/components/bottle-counter";
+import { CustomerReviews } from "@/components/customer-reviews";
 import {
   ArrowRightIcon,
   LeafIcon,
@@ -279,6 +280,9 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ----------------------------------------------- customer reviews */}
+      <CustomerReviews />
 
       {/* --------------------------------------------------------- verse */}
       <section className="bg-ink text-paper">

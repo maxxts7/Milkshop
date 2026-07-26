@@ -10,6 +10,7 @@ const LINKS = [
   { href: "/shop", label: "Shop" },
   { href: "/subscribe", label: "Milk Subscription" },
   { href: "/about", label: "Our Story" },
+  { href: "/certificates", label: "Certificates" },
   { href: "/contact", label: "Visit & Contact" },
 ];
 

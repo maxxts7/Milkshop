@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import {
   formatBottles,
   getBottleCount,
+  GOAT_PER_DAY,
+  MILK_PER_DAY,
   type BottleCount,
 } from "@/lib/bottle-count";
 import { BottleIcon, ClockIcon, GoatIcon, LeafIcon, TrendUpIcon } from "./icons";
@@ -68,16 +70,18 @@ function Board({
   label,
   icon,
   value,
+  places,
 }: {
   label: string;
   icon: React.ReactNode;
   value: number;
+  places: number;
 }) {
   return (
     <div className="flex-1 rounded-xl bg-paper-warm/95 backdrop-blur-sm px-4 py-5 sm:px-6 sm:py-6 shadow-lg shadow-ink/10 text-center">
       <p className="eyebrow !text-fresh mb-3 sm:mb-4">{label}</p>
       <div className="flex justify-center text-fresh mb-3 sm:mb-4">{icon}</div>
-      <Odometer value={value} />
+      <Odometer value={value} places={places} />
       <p className="eyebrow !text-fresh mt-3 sm:mt-4">Bottles</p>
     </div>
   );
@@ -86,6 +90,10 @@ function Board({
 /** The pair of live boards that sit in the home page hero. */
 export function BottleBoards({ initial }: { initial: BottleCount }) {
   const count = useBottleCount(initial);
+
+  // Both boards get the same number of tiles — sized for the bigger of the two
+  // daily figures — so the pair stays symmetrical and never reflows mid-count.
+  const places = Math.max(3, String(Math.max(MILK_PER_DAY, GOAT_PER_DAY)).length);
 
   return (
     <div>
@@ -98,19 +106,21 @@ export function BottleBoards({ initial }: { initial: BottleCount }) {
           label="Milk bottles sold today"
           icon={<BottleIcon className="h-7 w-7 sm:h-8 sm:w-8" />}
           value={count.milkToday}
+          places={places}
         />
         <Board
           label="Goat milk bottles sold today"
           icon={<GoatIcon className="h-7 w-7 sm:h-8 sm:w-8" />}
           value={count.goatToday}
+          places={places}
         />
       </div>
 
       <p className="flex items-center justify-center gap-2 mt-4 text-xs sm:text-sm text-ink-soft">
         <ClockIcon className="h-4 w-4 shrink-0" />
         {count.live
-          ? "Live count — updating through the morning"
-          : `Today's bottling is done — the boards move again from 9:00 AM`}
+          ? "Live count — updating through the day"
+          : `Today's count is complete — the boards start again at 9:00 AM`}
       </p>
     </div>
   );

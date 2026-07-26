@@ -31,19 +31,28 @@ const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 type Frequency = (typeof FREQUENCIES)[number]["key"];
 
+/** What the server tells us once the subscription is on the books. */
+interface Confirmation {
+  reference: string;
+  startDate: string;
+  schedule: string;
+  deliverySlot: string;
+  perDeliveryPaise: number;
+}
+
 export function SubscriptionBuilder({
   products,
   initialSlug,
-  loggedIn,
   customerName,
+  customerPhone,
   freshCity,
   slot,
   tomorrow,
 }: {
   products: SubProduct[];
   initialSlug?: string;
-  loggedIn: boolean;
   customerName: string;
+  customerPhone: string;
   freshCity: string;
   slot: string;
   tomorrow: string;
@@ -67,6 +76,7 @@ export function SubscriptionBuilder({
   const [startDate, setStartDate] = useState(tomorrow);
 
   const [name, setName] = useState(customerName);
+  const [phone, setPhone] = useState(customerPhone);
   const [line1, setLine1] = useState("");
   const [line2, setLine2] = useState("");
   const [landmark, setLandmark] = useState("");
@@ -74,6 +84,7 @@ export function SubscriptionBuilder({
 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmed, setConfirmed] = useState<Confirmation | null>(null);
 
   const unitPaise = variant
     ? (variant.subscriberPricePaise ?? variant.pricePaise)
@@ -111,13 +122,8 @@ export function SubscriptionBuilder({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-
-    if (!loggedIn) {
-      router.push("/login?next=/subscribe");
-      return;
-    }
-
     setBusy(true);
+
     try {
       const res = await fetch("/api/subscriptions", {
         method: "POST",
@@ -129,22 +135,20 @@ export function SubscriptionBuilder({
           weekdays: frequency === "weekly" ? weekdays : undefined,
           startDate,
           name,
+          phone,
           address: { line1, line2, landmark, pincode },
         }),
       });
       const json = await res.json();
 
       if (!res.ok) {
-        if (json.needsAuth) {
-          router.push("/login?next=/subscribe");
-          return;
-        }
         setError(json.error ?? "Could not start your subscription.");
         setBusy(false);
         return;
       }
 
-      router.push("/account?started=1");
+      setConfirmed(json as Confirmation);
+      setBusy(false);
       router.refresh();
     } catch {
       setError("Could not reach the server. Please try again.");
@@ -157,6 +161,58 @@ export function SubscriptionBuilder({
       <p className="text-ink-soft">
         No products are available for subscription right now.
       </p>
+    );
+  }
+
+  if (confirmed) {
+    return (
+      <div className="max-w-2xl">
+        <p className="eyebrow !text-fresh mb-3">Order confirmed</p>
+        <h2 className="font-display text-3xl md:text-4xl leading-tight mb-4">
+          Thank you, {name.split(" ")[0]} — your milk is on its way
+        </h2>
+        <p className="text-ink-soft leading-relaxed mb-8">
+          We have your subscription and the farm has been notified. Your first
+          delivery arrives {confirmed.deliverySlot.toLowerCase()}. There is
+          nothing to pay now — you pay cash at the door on each delivery.
+        </p>
+
+        <dl className="border border-rule divide-y divide-rule bg-paper-warm">
+          {[
+            ["Reference", confirmed.reference],
+            ["Name", name],
+            ["Mobile", `+91 ${phone}`],
+            [
+              "Delivery address",
+              [line1, line2, freshCity, pincode].filter(Boolean).join(", "),
+            ],
+            ["Landmark", landmark || "—"],
+            ["Product", product ? `${product.name} — ${variant?.label}` : "—"],
+            ["Quantity", `${quantity} per delivery`],
+            ["Schedule", confirmed.schedule],
+            ["Starts", confirmed.startDate],
+            ["Delivery time", confirmed.deliverySlot],
+            ["Per delivery", formatPaise(confirmed.perDeliveryPaise)],
+          ].map(([label, value]) => (
+            <div
+              key={label}
+              className="flex flex-wrap justify-between gap-x-6 gap-y-1 px-5 py-3.5"
+            >
+              <dt className="text-sm text-ink-soft">{label}</dt>
+              <dd className="text-sm text-right">{value}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <div className="flex flex-wrap gap-3 mt-8">
+          <Link href="/shop" className="btn btn-solid">
+            Continue shopping
+          </Link>
+          <Link href="/contact" className="btn btn-outline">
+            Change something
+          </Link>
+        </div>
+      </div>
     );
   }
 
@@ -338,6 +394,25 @@ export function SubscriptionBuilder({
               />
             </div>
             <div className="sm:col-span-2">
+              <label className="label" htmlFor="sub-phone">Mobile number</label>
+              <input
+                id="sub-phone"
+                className="field"
+                value={phone}
+                onChange={(e) =>
+                  setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))
+                }
+                inputMode="numeric"
+                autoComplete="tel-national"
+                placeholder="10-digit mobile"
+                required
+                minLength={10}
+              />
+              <p className="text-xs text-ink-muted mt-1.5">
+                So the milkman can reach you on the round.
+              </p>
+            </div>
+            <div className="sm:col-span-2">
               <label className="label" htmlFor="sub-line1">House / street</label>
               <input
                 id="sub-line1"
@@ -450,17 +525,14 @@ export function SubscriptionBuilder({
         ) : null}
 
         <button type="submit" className="btn btn-solid w-full mt-6" disabled={busy}>
-          {busy
-            ? "Starting…"
-            : loggedIn
-              ? "Start subscription"
-              : "Sign in to start"}
+          {busy ? "Placing order…" : "Place order"}
         </button>
 
         <p className="text-xs text-ink-muted mt-3 leading-relaxed text-center">
-          Pay cash on each delivery. Pause or cancel any time from{" "}
-          <Link href="/account" className="underline underline-offset-2">
-            your account
+          No account needed. Pay cash on each delivery, and pause or cancel any
+          time — just{" "}
+          <Link href="/contact" className="underline underline-offset-2">
+            tell us
           </Link>
           .
         </p>

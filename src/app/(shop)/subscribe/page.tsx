@@ -61,8 +61,8 @@ export default async function SubscribePage({
       <SubscriptionBuilder
         products={subscribable}
         initialSlug={initialSlug}
-        loggedIn={Boolean(customer)}
         customerName={customer?.name ?? ""}
+        customerPhone={customer?.phone ?? ""}
         freshCity={settings.freshDeliveryCity}
         slot={settings.deliverySlot}
         tomorrow={cutoff.deliveryDate}

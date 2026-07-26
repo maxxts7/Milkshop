@@ -24,12 +24,18 @@ const API_VERSION = process.env.WHATSAPP_API_VERSION || "v21.0";
  */
 const sent = new Set<string>();
 
+/** "26/07/2026 at 18:24" — the moment the alert is being raised, in IST. */
+function placedAtIst(): string {
+  const p = istParts();
+  return (
+    `${String(p.day).padStart(2, "0")}/${String(p.month + 1).padStart(2, "0")}/${p.year}` +
+    ` at ${String(p.hour).padStart(2, "0")}:${String(p.minute).padStart(2, "0")}`
+  );
+}
+
 /** Everything Minhal asked to see in the message, in reading order. */
 function renderMessage(o: OrderAlert): string {
-  const p = istParts();
-  const placedAt =
-    `${String(p.day).padStart(2, "0")}/${String(p.month + 1).padStart(2, "0")}/${p.year}` +
-    ` at ${String(p.hour).padStart(2, "0")}:${String(p.minute).padStart(2, "0")}`;
+  const placedAt = placedAtIst();
 
   const items = o.items
     .map(
@@ -64,6 +70,48 @@ function renderMessage(o: OrderAlert): string {
     .join("\n");
 }
 
+/** Everything the shop needs to start delivering a new subscription. */
+export interface SubscriptionAlert {
+  reference: string;
+  contactName: string;
+  contactPhone: string;
+  address: string;
+  landmark: string | null;
+  pincode: string;
+  productName: string;
+  variantLabel: string;
+  quantity: number;
+  /** e.g. "Every day" or "Once a week — Mon, Thu". */
+  schedule: string;
+  /** ISO date the first delivery is due. */
+  startDate: string;
+  /** e.g. "6:00 – 9:00 AM". */
+  deliverySlot: string;
+  perDeliveryPaise: number;
+}
+
+function renderSubscriptionMessage(s: SubscriptionAlert): string {
+  return [
+    `*New subscription ${s.reference}*`,
+    ``,
+    `Name: ${s.contactName}`,
+    `Mobile: +91 ${s.contactPhone}`,
+    `Address: ${s.address}`,
+    `Landmark: ${s.landmark || "—"}`,
+    `Pincode: ${s.pincode}`,
+    ``,
+    `Product: ${s.productName} — ${s.variantLabel}`,
+    `Quantity: ${s.quantity} per delivery`,
+    `Schedule: ${s.schedule}`,
+    `Starts: ${formatIstDate(s.startDate)}`,
+    `Delivery time: ${s.deliverySlot}`,
+    ``,
+    `Per delivery: ${formatPaise(s.perDeliveryPaise)} (cash on delivery)`,
+    ``,
+    `Placed: ${placedAtIst()} IST`,
+  ].join("\n");
+}
+
 /** Digits only, country code included — what the Cloud API expects. */
 function normaliseWhatsappNumber(raw: string): string {
   const digits = raw.replace(/\D/g, "");
@@ -91,7 +139,25 @@ export async function sendOrderWhatsapp(
   if (sent.has(order.orderNumber)) return;
   sent.add(order.orderNumber);
 
-  const body = renderMessage(order);
+  await deliver(renderMessage(order), whatsappNumber);
+}
+
+/**
+ * The same alert, for a subscription rather than a one-off order. The shop
+ * needs the delivery details in exactly the same place, so it goes to the same
+ * number and follows the same never-throw rule.
+ */
+export async function sendSubscriptionWhatsapp(
+  subscription: SubscriptionAlert,
+  whatsappNumber: string,
+): Promise<void> {
+  if (sent.has(subscription.reference)) return;
+  sent.add(subscription.reference);
+
+  await deliver(renderSubscriptionMessage(subscription), whatsappNumber);
+}
+
+async function deliver(body: string, whatsappNumber: string): Promise<void> {
   const to = normaliseWhatsappNumber(whatsappNumber ?? "");
   const token = process.env.WHATSAPP_TOKEN;
   const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;

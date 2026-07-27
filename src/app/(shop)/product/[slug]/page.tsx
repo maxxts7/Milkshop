@@ -9,6 +9,7 @@ import { CutoffCountdown } from "@/components/cutoff-countdown";
 import { CheckIcon, StoreIcon, TruckIcon } from "@/components/icons";
 import { getCatalogue, getProductBySlug, getSettings } from "@/lib/store";
 import { getCutoffInfo } from "@/lib/delivery";
+import { getPreOrderTerms } from "@/lib/pre-order";
 import { formatPaise } from "@/lib/money";
 
 /**
@@ -102,6 +103,7 @@ export default async function ProductPage({
               slug={product.slug}
               subscribable={product.subscribable}
               ordersPaused={settings.ordersPaused}
+              preOrder={getPreOrderTerms(product.slug)}
               variants={product.variants.map((v) => ({
                 id: v.id,
                 label: v.label,

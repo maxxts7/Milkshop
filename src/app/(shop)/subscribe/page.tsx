@@ -3,6 +3,7 @@ import { SubscriptionBuilder, type SubProduct } from "@/components/subscription-
 import { getCatalogue, getSettings } from "@/lib/store";
 import { getCurrentCustomer } from "@/lib/auth";
 import { getCutoffInfo } from "@/lib/delivery";
+import { getPreOrderTerms } from "@/lib/pre-order";
 
 export const metadata: Metadata = {
   title: "Milk subscription",
@@ -27,7 +28,15 @@ export default async function SubscribePage({
   const cutoff = getCutoffInfo(settings);
 
   const subscribable: SubProduct[] = catalogue
-    .filter((p) => p.subscribable && p.status === "active" && p.variants.length > 0)
+    // Pre-order items are made to order in batches, so they cannot be put on a
+    // standing daily round.
+    .filter(
+      (p) =>
+        p.subscribable &&
+        p.status === "active" &&
+        p.variants.length > 0 &&
+        !getPreOrderTerms(p.slug),
+    )
     .map((p) => ({
       id: p.id,
       slug: p.slug,

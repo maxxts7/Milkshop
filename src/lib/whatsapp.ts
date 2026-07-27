@@ -61,7 +61,8 @@ function renderMessage(o: OrderAlert): string {
     ``,
     `Subtotal: ${formatPaise(o.subtotalPaise)}`,
     `Delivery charge: ${o.deliveryFeePaise === 0 ? "Free" : formatPaise(o.deliveryFeePaise)}`,
-    `*Total: ${formatPaise(o.totalPaise)}* (cash on ${o.fulfilment === "pickup" ? "pickup" : "delivery"})`,
+    `*Total: ${formatPaise(o.totalPaise)}*`,
+    `Payment: cash on ${o.fulfilment === "pickup" ? "pickup" : "delivery"}`,
     ``,
     `Placed: ${placedAt} IST`,
     o.customerNote ? `\nNote from customer: ${o.customerNote}` : null,
@@ -85,7 +86,7 @@ export interface SubscriptionAlert {
   schedule: string;
   /** ISO date the first delivery is due. */
   startDate: string;
-  /** e.g. "6:00 – 9:00 AM". */
+  /** e.g. "8:00 – 11:00 AM". */
   deliverySlot: string;
   perDeliveryPaise: number;
 }
@@ -106,7 +107,9 @@ function renderSubscriptionMessage(s: SubscriptionAlert): string {
     `Starts: ${formatIstDate(s.startDate)}`,
     `Delivery time: ${s.deliverySlot}`,
     ``,
-    `Per delivery: ${formatPaise(s.perDeliveryPaise)} (cash on delivery)`,
+    `Per delivery: ${formatPaise(s.perDeliveryPaise)}`,
+    `Delivery charge: Free`,
+    `Payment: cash on delivery`,
     ``,
     `Placed: ${placedAtIst()} IST`,
   ].join("\n");

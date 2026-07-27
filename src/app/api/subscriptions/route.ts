@@ -8,8 +8,10 @@ import { getCurrentCustomer } from "@/lib/auth";
 import { getSettings, isPincodeServiceable } from "@/lib/store";
 import { sendSubscriptionWhatsapp } from "@/lib/whatsapp";
 import {
+  SUBSCRIPTION_DELIVERY_SLOT,
   isPhone,
   isPincode,
+  isSrinagarPincode,
   istParts,
   normalisePhone,
   todayIST,
@@ -124,7 +126,13 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!(await isPincodeServiceable(body.address.pincode))) {
+  // Every Srinagar pincode is on the subscription round, whether or not it has a
+  // row in delivery_pincodes — that table only bounds the one-off fresh round.
+  const subscribablePincode =
+    isSrinagarPincode(body.address.pincode) ||
+    (await isPincodeServiceable(body.address.pincode));
+
+  if (!subscribablePincode) {
     return NextResponse.json(
       {
         error: `Subscriptions are delivered inside ${settings.freshDeliveryCity} only. ${body.address.pincode} is outside our morning route.`,
@@ -231,7 +239,7 @@ export async function POST(request: Request) {
       quantity: body.quantity,
       schedule,
       startDate,
-      deliverySlot: settings.deliverySlot,
+      deliverySlot: SUBSCRIPTION_DELIVERY_SLOT,
       perDeliveryPaise,
     },
     settings.whatsappNumber,
@@ -243,7 +251,7 @@ export async function POST(request: Request) {
     reference,
     startDate,
     schedule,
-    deliverySlot: settings.deliverySlot,
+    deliverySlot: SUBSCRIPTION_DELIVERY_SLOT,
     perDeliveryPaise,
   });
 }

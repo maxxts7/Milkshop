@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SubscriptionBuilder, type SubProduct } from "@/components/subscription-builder";
 import { getCatalogue, getSettings } from "@/lib/store";
 import { getCurrentCustomer } from "@/lib/auth";
-import { getCutoffInfo } from "@/lib/delivery";
+import { SUBSCRIPTION_DELIVERY_SLOT, getCutoffInfo } from "@/lib/delivery";
 import { getPreOrderTerms } from "@/lib/pre-order";
 
 export const metadata: Metadata = {
@@ -61,9 +61,10 @@ export default async function SubscribePage({
         </h1>
         <p className="text-lg text-ink-soft leading-relaxed">
           Choose what you want and how often. We arrive between{" "}
-          {settings.deliverySlot.toLowerCase()} across {settings.freshDeliveryCity},
-          and you pay in cash at the door. Pause it whenever you travel — there is
-          no contract and no advance.
+          {SUBSCRIPTION_DELIVERY_SLOT.toLowerCase()} across{" "}
+          {settings.freshDeliveryCity}, delivery is free, and you pay in cash at
+          the door. Pause it whenever you travel — there is no contract and no
+          advance.
         </p>
       </header>
 
@@ -73,7 +74,7 @@ export default async function SubscribePage({
         customerName={customer?.name ?? ""}
         customerPhone={customer?.phone ?? ""}
         freshCity={settings.freshDeliveryCity}
-        slot={settings.deliverySlot}
+        slot={SUBSCRIPTION_DELIVERY_SLOT}
         tomorrow={cutoff.deliveryDate}
       />
     </div>

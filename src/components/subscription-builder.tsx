@@ -192,6 +192,7 @@ export function SubscriptionBuilder({
             ["Schedule", confirmed.schedule],
             ["Starts", confirmed.startDate],
             ["Delivery time", confirmed.deliverySlot],
+            ["Delivery charge", "Free"],
             ["Per delivery", formatPaise(confirmed.perDeliveryPaise)],
           ].map(([label, value]) => (
             <div
@@ -505,6 +506,10 @@ export function SubscriptionBuilder({
           <div className="flex justify-between">
             <span className="text-ink-soft">Per delivery</span>
             <span className="font-medium">{formatPaise(perDelivery)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-ink-soft">Delivery charge</span>
+            <span>Free</span>
           </div>
           <div className="flex justify-between">
             <span className="text-ink-soft">Roughly per month</span>

@@ -284,7 +284,8 @@ const CATALOGUE: SeedProduct[] = [
   },
 ];
 
-// Srinagar city pincodes.
+// Srinagar city pincodes — the whole 190001–190025 block, so no address inside
+// the city is turned away. Keep this in step with isSrinagarPincode().
 const SRINAGAR_PINCODES: [string, string][] = [
   ["190001", "Srinagar GPO / Lal Chowk"],
   ["190002", "Habba Kadal"],
@@ -292,19 +293,24 @@ const SRINAGAR_PINCODES: [string, string][] = [
   ["190004", "Soura"],
   ["190005", "Chanapora"],
   ["190006", "Bemina"],
+  ["190007", "Srinagar"],
   ["190008", "Batmaloo"],
   ["190009", "Shalteng"],
   ["190010", "Zakura"],
   ["190011", "Nishat"],
   ["190012", "Hazratbal"],
+  ["190013", "Srinagar"],
   ["190014", "Parimpora"],
   ["190015", "Barzulla / Natipora"],
+  ["190016", "Srinagar"],
   ["190017", "Pantha Chowk"],
   ["190018", "Buchpora"],
   ["190019", "Lawaypora"],
   ["190020", "Harwan"],
   ["190021", "Nowgam"],
+  ["190022", "Srinagar"],
   ["190023", "Sanat Nagar"],
+  ["190024", "Srinagar"],
   ["190025", "Aloochi Bagh"],
 ];
 

@@ -92,6 +92,13 @@ export const MONTH_NAMES = [
   "December",
 ];
 
+/**
+ * Subscriptions ride their own morning round, later than the one-off fresh
+ * delivery in Settings. Kept separate on purpose: changing settings.deliverySlot
+ * would move one-time and pre-order deliveries too.
+ */
+export const SUBSCRIPTION_DELIVERY_SLOT = "8:00 – 11:00 AM";
+
 export function formatIstDate(iso: string): string {
   const [y, m, d] = iso.split("-").map(Number);
   const weekday = new Date(Date.UTC(y, m - 1, d)).getUTCDay();
@@ -222,6 +229,21 @@ export function resolveZone(
 
 export function isPincode(value: string): boolean {
   return /^[1-9][0-9]{5}$/.test(value.trim());
+}
+
+/**
+ * Every pincode inside Srinagar district — the whole 190001–190025 block.
+ *
+ * The delivery_pincodes table lists the areas the one-off fresh round covers and
+ * is edited from the admin panel. Subscriptions run across the entire city, so
+ * they check this range instead of being held to whatever rows happen to be in
+ * that table.
+ */
+export function isSrinagarPincode(value: string): boolean {
+  const code = value.trim();
+  if (!isPincode(code)) return false;
+  const n = Number(code);
+  return n >= 190001 && n <= 190025;
 }
 
 export function isPhone(value: string): boolean {

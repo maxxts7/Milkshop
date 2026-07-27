@@ -12,9 +12,12 @@ import {
   addresses,
 } from "@/lib/db/schema";
 import { getCurrentCustomer } from "@/lib/auth";
-import { getSettings } from "@/lib/store";
 import { formatPaise } from "@/lib/money";
-import { formatIstDate, todayIST } from "@/lib/delivery";
+import {
+  SUBSCRIPTION_DELIVERY_SLOT,
+  formatIstDate,
+  todayIST,
+} from "@/lib/delivery";
 import {
   FREQUENCY_LABELS,
   nextDeliveries,
@@ -48,10 +51,9 @@ export default async function AccountPage({
 }: {
   searchParams: Promise<{ started?: string }>;
 }) {
-  const [{ started }, customer, settings] = await Promise.all([
+  const [{ started }, customer] = await Promise.all([
     searchParams,
     getCurrentCustomer(),
-    getSettings(),
   ]);
 
   if (!customer) redirect("/login?next=/account");
@@ -162,7 +164,7 @@ export default async function AccountPage({
           <CheckIcon className="h-5 w-5 shrink-0 mt-0.5 text-fresh" />
           <p className="text-sm text-fresh leading-relaxed">
             Your subscription is live. First delivery arrives{" "}
-            {settings.deliverySlot.toLowerCase()} — pay the rider in cash.
+            {SUBSCRIPTION_DELIVERY_SLOT.toLowerCase()} — pay the rider in cash.
           </p>
         </div>
       ) : null}
@@ -181,7 +183,7 @@ export default async function AccountPage({
           </div>
           <SubscriptionManager
             subscriptions={managed}
-            slot={settings.deliverySlot}
+            slot={SUBSCRIPTION_DELIVERY_SLOT}
           />
         </section>
 
